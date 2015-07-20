@@ -8,26 +8,123 @@ import org.sonar.api.measures.SumChildValuesFormula;
 
 import java.util.List;
 
+/**
+ * All Halstead metrics
+ *
+ * <p>The metrics are of two types:</p>
+ *
+ * <ul>
+ *     <li>metrics for all basic measurements (see {@link HalsteadMetricDefs};
+ *     </li>
+ *     <li>calculated metrics.</li>
+ * </ul>
+ *
+ * <p>See <a
+ * href="https://en.wikipedia.org/wiki/Halstead_complexity_measures">the
+ * Wikipedia entry</a> for Halstead complexity measures for a description of all
+ * measures.</p>
+ *
+ * <p>Aggregation for basic measurements is done from individual source files up
+ * to the project level using a {@link SumChildValuesFormula} (with the boolean
+ * argument of the constructor being {@code true}; this means 0 will be supplied
+ * for a file if there is no value). Note that this is the responsibility of the
+ * implementation to actually persist those metric values.</p>
+ *
+ * <p>The domain associated with all metrics is {@code Halstead}; the metric key
+ * is {@code halstead_xxx}, where `xxx` is the metric name in lowercase.</p>
+ *
+ * @see HalsteadFormula
+ */
 public final class HalsteadMetrics
     implements Metrics
 {
     private static final String DOMAIN = "Halstead";
 
+    /**
+     * Total number of operands
+     *
+     * @see HalsteadMetricDefs#TOTAL_OPERANDS
+     */
     public static final Metric<Integer> TOTAL_OPERANDS;
+
+    /**
+     * Number of distinct operands
+     *
+     * @see HalsteadMetricDefs#DISTINCT_OPERANDS
+     */
     public static final Metric<Integer> DISTINCT_OPERANDS;
+
+    /**
+     * Total number of operators
+     *
+     * @see HalsteadMetricDefs#TOTAL_OPERATORS
+     */
     public static final Metric<Integer> TOTAL_OPERATORS;
+
+    /**
+     * Number of distinct opertors
+     *
+     * @see HalsteadMetricDefs#DISTINCT_OPERATORS
+     */
     public static final Metric<Integer> DISTINCT_OPERATORS;
 
+    /**
+     * Vocabulary (computed)
+     *
+     * @see HalsteadFormula#VOCABULARY
+     */
     public static final Metric<Integer> VOCABULARY;
+
+    /**
+     * Length (computed)
+     *
+     * @see HalsteadFormula#LENGTH
+     */
     public static final Metric<Integer> LENGTH;
 
+    /**
+     * Calculated length (computed)
+     *
+     * @see HalsteadFormula#CALCULATED_LENGTH
+     */
     public static final Metric<Double> CALCULATED_LENGTH;
+
+    /**
+     * Volume (computed)
+     *
+     * @see HalsteadFormula#VOLUME
+     */
     public static final Metric<Double> VOLUME;
 
+    /**
+     * Difficulty (computed)
+     *
+     * @see HalsteadFormula#DIFFICULTY
+     */
     public static final Metric<Double> DIFFICULTY;
+
+    /**
+     * Effort (computed)
+     *
+     * @see HalsteadFormula#EFFORT
+     */
     public static final Metric<Double> EFFORT;
 
+    /**
+     * Estimated time to program (computed)
+     *
+     * <p>Note that the type of this metric is {@link
+     * org.sonar.api.measures.Metric.ValueType#WORK_DUR}.</p>
+     *
+     * @see HalsteadFormula#TIME
+     */
     public static final Metric<Integer> TIME;
+
+    /**
+     * Estimated delivered bugs (computed)
+     *
+     * @see HalsteadFormula#BUGS
+     */
     public static final Metric<Double> BUGS;
 
     @SuppressWarnings("rawtypes")
