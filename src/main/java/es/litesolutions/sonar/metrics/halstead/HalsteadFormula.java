@@ -1,6 +1,9 @@
 package es.litesolutions.sonar.metrics.halstead;
 
-import org.sonar.api.measures.*;
+
+import org.sonar.api.measures.Formula;
+import org.sonar.api.measures.FormulaContext;
+import org.sonar.api.measures.FormulaData;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
