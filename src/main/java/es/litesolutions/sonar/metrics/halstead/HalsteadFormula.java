@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Halstead computed metrics formulae
  *
- * <p>Those formulas are copied straight off <a
+ * <p>Those formulae are copied straight off <a
  * href="https://en.wikipedia.org/wiki/Halstead_complexity_measures">the
  * Wikipedia entry</a>.</p>
  *
@@ -20,8 +20,8 @@ import java.util.List;
  *     <li>if the value for a given dependent metric is 0 and a logarithm or
  *     division is required, the equivalent term of the formula will be set to
  *     0;</li>
- *     <li>logarithms and exponentiation are done using {@link Math}, not {@link
- *     StrictMath}.</li>
+ *     <li>logarithm and exponentiation calculations are done using {@link
+ *     Math}, not {@link StrictMath}.</li>
  * </ul>
  */
 @SuppressWarnings("rawtypes")
@@ -30,7 +30,7 @@ public enum HalsteadFormula
     implements Formula
 {
     /**
-     * Compute the vocabulary
+     * Vocabulary formula
      *
      * <p>Dependencies:</p>
      *
@@ -64,7 +64,7 @@ public enum HalsteadFormula
     },
 
     /**
-     * Compute the length
+     * Length formula
      *
      * <p>Dependencies:</p>
      *
@@ -99,7 +99,7 @@ public enum HalsteadFormula
     },
 
     /**
-     * Compute the calculated length
+     * Calculated length formula
      *
      * <p>Dependencies:</p>
      *
@@ -138,7 +138,7 @@ public enum HalsteadFormula
     },
 
     /**
-     * Compute the volume
+     * Volume formula
      *
      * <p>Dependencies:</p>
      *
@@ -174,7 +174,7 @@ public enum HalsteadFormula
     },
 
     /**
-     * Compute the difficulty
+     * Difficulty formula
      *
      * <p>Dependencies:</p>
      *
@@ -215,7 +215,7 @@ public enum HalsteadFormula
     },
 
     /**
-     * Compute the estimated effort
+     * Estimated effort formula
      *
      * <p>Dependencies:</p>
      *
@@ -249,11 +249,13 @@ public enum HalsteadFormula
     },
 
     /**
-     * Compute the estimated time to program
+     * Estimated time to program formula
      *
-     * <p>Note: since the type of the associated metric is a work duration, the
+     * <p>Note: since the type of the associated metric is a {@link
+     * org.sonar.api.measures.Metric.ValueType#WORK_DUR work duration}, the
      * original formula is altered so that the obtained time, which is in
-     * seconds, is again divided by 60.</p>
+     * seconds, is again divided by 60 (since a work duration is in minutes).
+     * </p>
      *
      * <p>Dependencies:</p>
      *
@@ -276,15 +278,12 @@ public enum HalsteadFormula
         {
             final double effort = data.getMeasure(HalsteadMetrics.EFFORT)
                 .getValue();
-            // A metric value type of WORK_DUR is in minutes; we therefore
-            // divide the original Halstead formula (which gives a time in
-            // seconds) by 60 again
             return new Measure(context.getTargetMetric(), effort / (18 * 60));
         }
     },
 
     /**
-     * Compute the estimated number of delivered bugs
+     * Estimated delivered bugs formula
      *
      * <p>Dependencies:</p>
      *

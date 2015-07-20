@@ -14,12 +14,12 @@ import java.util.List;
  * <p>The metrics are of two types:</p>
  *
  * <ul>
- *     <li>metrics for all basic measurements (see {@link HalsteadMetricDefs};
+ *     <li>metrics for all basic measurements (see {@link HalsteadMetricDefs});
  *     </li>
- *     <li>calculated metrics.</li>
+ *     <li>calculated metrics (see {@link HalsteadFormula}).</li>
  * </ul>
  *
- * <p>See <a
+ * <p>See <a target="_blank"
  * href="https://en.wikipedia.org/wiki/Halstead_complexity_measures">the
  * Wikipedia entry</a> for Halstead complexity measures for a description of all
  * measures.</p>
@@ -27,13 +27,11 @@ import java.util.List;
  * <p>Aggregation for basic measurements is done from individual source files up
  * to the project level using a {@link SumChildValuesFormula} (with the boolean
  * argument of the constructor being {@code true}; this means 0 will be supplied
- * for a file if there is no value). Note that this is the responsibility of the
- * implementation to actually persist those metric values.</p>
+ * for a file if there is no value). <em>It is the responsibility of the
+ * implementation to actually persist those metric values.</em></p>
  *
  * <p>The domain associated with all metrics is {@code Halstead}; the metric key
  * is {@code halstead_xxx}, where `xxx` is the metric name in lowercase.</p>
- *
- * @see HalsteadFormula
  */
 public final class HalsteadMetrics
     implements Metrics
