@@ -1,8 +1,18 @@
 buildscript {
     repositories {
         mavenCentral();
+        maven {
+            url("https://plugins.gradle.org/m2/");
+        }
+    }
+    dependencies {
+        classpath(group: "gradle.plugin.com.iadams.plugins",
+            name: "gradle-sonar-packaging-plugin",
+            version: "0.1.1");
     }
 };
+
+apply(plugin: "com.iadams.sonar-packaging");
 
 apply(plugin: "java");
 apply(plugin: "maven");
@@ -20,23 +30,47 @@ sourceCompatibility = javaVersion;
 targetCompatibility = javaVersion; // defaults to sourceCompatibility
 
 /*
- * List of dependencies
- */
-
-dependencies {
-    compile(group: "org.codehaus.sonar", name: "sonar-plugin-api",
-        version: "5.1");
-}
-
-javadoc.options.links("http://docs.oracle.com/javase/7/docs/api/");
-javadoc.options.links("http://javadocs.sonarsource.org/5.1/apidocs/");
-
-/*
  * Repositories to use
  */
 repositories {
     mavenCentral();
 }
+
+/*
+ * List of dependencies
+ */
+
+configurations {
+    provided;
+    compile.extendsFrom(provided);
+}
+
+dependencies {
+    provided(group: "org.codehaus.sonar", name: "sonar-plugin-api",
+        version: "5.1");
+}
+
+sonarPackaging {
+    pluginKey = "halsteadmetrics";
+    pluginClass = "es.litesolutions.sonar.metrics.halstead.HalsteadMetricsPlugin";
+    pluginName = "Halstead";
+    pluginDescription = "Halstead metrics";
+    pluginLicense = "LGPLv3 or later";
+    pluginDevelopers = "Francis Galiegue (francis.galiegue@litesolutions.es)";
+    organization {
+        name = "Lite solutions";
+        url = "http://www.litesolutions.es/";
+    };
+}
+
+task enforceVersion << {
+    def foundVersion = JavaVersion.current();
+    if (foundVersion != javaVersion)
+        throw new IllegalStateException("Wrong java version; required is " +
+            javaVersion + ", but found " + foundVersion);
+}
+
+compileJava.dependsOn(enforceVersion);
 
 /*
  * Necessary to generate the source and javadoc jars
@@ -50,6 +84,9 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = "javadoc";
     from javadoc.destinationDir;
 }
+
+javadoc.options.links("http://docs.oracle.com/javase/7/docs/api/");
+javadoc.options.links("http://javadocs.sonarsource.org/5.1/apidocs/");
 
 artifacts {
     archives jar;
@@ -67,15 +104,15 @@ task wrapper(type: Wrapper) {
  */
 
 project.ext {
-    gitrwscm = sprintf("git@github.com:fge/%s", name);
-    gitroscm = sprintf("https://github.com/fge/%s.git", name);
-    projectURL = sprintf("https://github.com/fge/%s", name);
+    gitrwscm = sprintf("git@github.com:litesolutions/%s", name);
+    gitroscm = sprintf("https://github.com/litesolutions/%s.git", name);
+    projectURL = sprintf("https://github.com/litesolutions/%s", name);
     sonatypeStaging = "https://oss.sonatype.org/service/local/staging/deploy/maven2/";
     sonatypeSnapshots = "https://oss.sonatype.org/content/repositories/snapshots/";
 };
 
 task checkSigningRequirements << {
-    def requiredProperties = [ "sonatypeUsername", "sonatypePassword" ];
+    def requiredProperties = [ "litesolutions.mavenUsername", "litesolutions.mavenPassword" ];
     def noDice = false;
     requiredProperties.each {
         if (project.properties[it] == null) {
@@ -98,15 +135,15 @@ uploadArchives {
 
             repository(url: "${sonatypeStaging}") {
                 authentication(
-                    userName: project.properties["sonatypeUsername"],
-                    password: project.properties["sonatypePassword"]
+                    userName: project.properties["litesolutions.mavenUsername"],
+                    password: project.properties["litesolutions.mavenPassword"]
                 );
             }
 
             snapshotRepository(url: "${sonatypeSnapshots}") {
                 authentication(
-                    userName: project.properties["sonatypeUsername"],
-                    password: project.properties["sonatypePassword"]
+                        userName: project.properties["litesolutions.mavenUsername"],
+                        password: project.properties["litesolutions.mavenPassword"]
                 );
             }
         }
@@ -137,11 +174,6 @@ uploadArchives {
                 name "Lesser General Public License, version 3 or greater";
                 url "http://www.gnu.org/licenses/lgpl.html";
                 distribution "repo";
-            };
-            license {
-                name "Apache Software License, version 2.0";
-                url "http://www.apache.org/licenses/LICENSE-2.0";
-                distribution "repo";
             }
         }
 
@@ -149,7 +181,7 @@ uploadArchives {
             developer {
                 id "fge";
                 name "Francis Galiegue";
-                email "fgaliegue@gmail.com";
+                email "francis.galiegue@litesolutions.es";
             }
         }
     }
