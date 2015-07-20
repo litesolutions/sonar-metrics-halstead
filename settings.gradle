@@ -1,0 +1,2 @@
+include "sonar-metrics-halstead-plugin";
+

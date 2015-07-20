@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        mavenCentral();
+        maven {
+            url("https://plugins.gradle.org/m2/");
+        }
+    }
+    dependencies {
+        classpath(group: "gradle.plugin.com.iadams.plugins",
+                name: "gradle-sonar-packaging-plugin",
+                version: "0.1.1");
+    }
+};
+
+apply(plugin: "com.iadams.sonar-packaging");
+
+repositories {
+    mavenCentral();
+}
+
+configurations {
+    provided;
+    compile.extendsFrom(provided);
+}
+
+dependencies {
+    compile project(":");
+    provided(group: "org.codehaus.sonar", name: "sonar-plugin-api",
+            version: "5.1");
+}
+
+sonarPackaging {
+    pluginKey = "halsteadmetrics";
+    pluginClass = "es.litesolutions.sonar.metrics.halstead.HalsteadMetricsPlugin";
+    pluginName = "Halstead";
+    pluginDescription = "Halstead metrics";
+    pluginLicense = "LGPLv3 or later";
+    pluginDevelopers = "Francis Galiegue (francis.galiegue@litesolutions.es)";
+    organization {
+        name = "Lite solutions";
+        url = "http://www.litesolutions.es/";
+    };
+}
